@@ -6,10 +6,10 @@ import pickle
 import os
 
 def trainer_factory(model: BaseEstimator, X: npt.ArrayLike, y: npt.ArrayLike, supervised:bool=False) -> Callable:
-    def trainer(**kwargs) -> BaseEstimator:
+    def trainer(**kwargs) -> tuple[BaseEstimator, str]:
         mdl = model(**kwargs).fit(X, y) if supervised else model(**kwargs).fit(X)
-        save_model(mdl)
-        return mdl
+        path = save_model(mdl)
+        return mdl, path
 
     return trainer
 
