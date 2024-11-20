@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 def generate_report():
     pass
@@ -15,7 +16,7 @@ def analyze_file(filename:str):
 def analyze_directory(directory_path:str):
     pass
 
-def main(*args, **kwargs):
+def main(*args):
     parser = argparse.ArgumentParser(prog="Anomaly Detection in PCAP",
                                      description="A command line program to detect network anomalies in capture files",
                                      epilog="Written by Nima Afsari and Evan Vance")
@@ -34,7 +35,7 @@ def main(*args, **kwargs):
     if args.is_directory:
         return analyze_directory(args.filename)
 
-    pass
+    return 0
 
 if __name__ == "__main__":
-    main()
+    main(*sys.argv)
