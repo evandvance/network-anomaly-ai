@@ -1,22 +1,46 @@
 import argparse
 import sys
+import os
+import glob
+from nfstream import NFStreamer
+from helpers import load_model
+
+MODEL = "IsolationForest_2024-11-1918:00:35.183625+00:00.mdl"
+MODEL_PATH = f"{os.getcwd()}/models/{MODEL}"
 
 def generate_report():
     pass
 
-def train_model(filename:str):
+def train_model(filename:str)-> int:
     pass
 
-def train_on_directory(directory_path:str):
+def train_on_directory(directory_path:str)-> int:
     pass
 
-def analyze_file(filename:str):
-    pass
+def analyze_file(filename:str) -> int:
+    streamer = NFStreamer(source=filename, statistical_analysis=True, )
+    df = streamer.to_pandas(columns_to_anonymize=())
 
-def analyze_directory(directory_path:str):
-    pass
+    model = load_model(MODEL_PATH)
 
-def main(*args):
+    #There is def a bug here. I need to look at what the streamer spits out to know how to do the feature accessing
+    predictions = model.predict(df[model.columns])
+
+    generate_report(predictions)
+
+    return 0
+
+
+def analyze_directory(directory_path:str) -> int:
+    pcaps = glob.glob(os.path.join(f"{os.getcwd()}{directory_path.replace(".","")}", '*.pcap'))
+
+    for capture in pcaps:
+        analyze_file(capture)
+
+    return 0
+
+
+def main(*args) -> int:
     parser = argparse.ArgumentParser(prog="Anomaly Detection in PCAP",
                                      description="A command line program to detect network anomalies in capture files",
                                      epilog="Written by Nima Afsari and Evan Vance")

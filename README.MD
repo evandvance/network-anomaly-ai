@@ -19,5 +19,7 @@ With using conda
 ```sh
 conda create --name ids-ai python=3.10
 conda activate ids-ai
+conda config --set pip_interop_enabled True
 conda install --yes --file requirements.txt
+pip install nfstream
 ```
