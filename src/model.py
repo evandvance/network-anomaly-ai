@@ -6,6 +6,7 @@ from nfstream import NFStreamer
 from sklearn.ensemble import IsolationForest
 from src.helpers import load_model, save_model, trainer_factory
 from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import auc, precision_recall_curve, accuracy_score, precision_score, recall_score
 
 with open("./settings.json") as f:
     settings = json.load(f)
@@ -49,3 +50,17 @@ def train_on_directory(directory_path:str)-> int:
         train_model(capture)
 
     return 0
+
+def eval_model(model, X_test, y_test):
+    score = {}
+    predictions = model.predict(X_test)
+
+    predictions[predictions == -1] = 0
+
+    precision, recall, _ = precision_recall_curve(y_test, predictions)
+    score["auc"] = auc(recall, precision)
+    score["precision"] = precision_score(y_test, predictions)
+    score["recall"] = recall_score(y_test, predictions)
+    score["accuracy"] = accuracy_score(y_test, predictions)
+
+    return score
