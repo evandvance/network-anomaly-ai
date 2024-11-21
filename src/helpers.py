@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 import numpy.typing as npt
 import pickle
 import os
+from src.models import IsoForest
 
 def trainer_factory(model: BaseEstimator, X: npt.ArrayLike, y: npt.ArrayLike, supervised:bool=False) -> Callable:
     def trainer(**kwargs) -> tuple[BaseEstimator, str]:
@@ -21,6 +22,6 @@ def save_model(model:BaseEstimator) -> str:
         pickle.dump(model,f)
     return path
 
-def load_model(path:str) -> BaseEstimator:
+def load_model(path:str) -> IsoForest:
     with open(path, 'rb') as f:
         return pickle.load(f)
