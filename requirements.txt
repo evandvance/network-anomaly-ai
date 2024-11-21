@@ -1,7 +1,5 @@
 scikit-learn
 matplotlib
-matplotlib-base
 numpy
 pandas
 ipykernel
-optuna
