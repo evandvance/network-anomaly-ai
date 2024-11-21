@@ -2,7 +2,6 @@ import argparse
 import sys
 from src.analyzer import analyze_directory, analyze_file
 from src.model import train_model, train_on_directory
-import json
 
 
 def main(*args) -> int:
@@ -13,7 +12,11 @@ def main(*args) -> int:
     parser.add_argument("-d", "--directory", action="store_true", dest="is_directory")
     parser.add_argument("-t", "--train", action="store_true", dest="is_in_train_mode")
     parser.add_argument("-v", action="version", version="0.0.1")
+    parser.add_argument("--DELETE", action="store_true", dest="delete")
     args = parser.parse_args(args)
+
+    if args.delete:
+        pass
 
     if args.is_directory and args.is_in_train_mode:
         return train_on_directory(args.filename)
@@ -25,7 +28,6 @@ def main(*args) -> int:
         return analyze_directory(args.filename)
 
     return analyze_file(args.filename)
-    return 0
 
 if __name__ == "__main__":
     main(*sys.argv)

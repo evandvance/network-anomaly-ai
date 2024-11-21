@@ -1,13 +1,13 @@
 import glob
 import os
 from nfstream import NFStreamer
-from helpers import load_model
-from report import generate_report
+from src.helpers import load_model
+from src.report import generate_report
 import json
 
-
-settings = json.load("./settings.json")
-MODEL_PATH = f"{os.getcwd()}/models/{settings["MODEL"]}"
+with open("./settings.json") as f:
+    settings = json.load(f)
+MODEL_PATH = f"{os.getcwd()}/models/{settings['MODEL']}"
 
 
 def analyze_file(filename:str) -> int:
@@ -23,7 +23,7 @@ def analyze_file(filename:str) -> int:
 
 
 def analyze_directory(directory_path:str) -> int:
-    pcaps = glob.glob(os.path.join(f"{os.getcwd()}{directory_path.replace(".","")}", '*.pcap'))
+    pcaps = glob.glob(os.path.join(f"{os.getcwd()}{directory_path.replace('.','')}", '*.pcap'))
 
     for capture in pcaps:
         analyze_file(capture)

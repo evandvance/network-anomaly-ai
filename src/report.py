@@ -1,4 +1,4 @@
 import numpy.typing as npt
 
-def generate_report(predictions: npt.arraylike):
+def generate_report(predictions: npt.ArrayLike):
     pass
