@@ -1,9 +1,9 @@
 import glob
 import os
-from nfstream import NFStreamer
-from src.helpers import load_model
+from src.helpers import load_model, load_data
 from src.report import generate_report
 import json
+
 
 with open("./settings.json") as f:
     settings = json.load(f)
@@ -11,15 +11,12 @@ MODEL_PATH = f"{os.getcwd()}/models/{settings['MODEL']}"
 
 
 def analyze_file(filename:str) -> int:
-    streamer = NFStreamer(source=filename, statistical_analysis=True, )
-    df = streamer.to_pandas(columns_to_anonymize=())
-
+    data = load_data(filename)
     model = load_model(MODEL_PATH)
 
-    #There is def a bug here. I need to look at what the streamer spits out to know how to do the feature accessing
-    predictions = model.predict(df[model.columns])
+    predictions = model.predict(data[model.columns])
 
-    return generate_report(predictions)
+    return generate_report(predictions, filename)
 
 
 def analyze_directory(directory_path:str) -> int:
