@@ -6,8 +6,11 @@ import pickle
 import os
 from src.models import IsoForest
 
-def trainer_factory(model: BaseEstimator, X: npt.ArrayLike, y: npt.ArrayLike, supervised:bool=False) -> Callable:
+def trainer_factory(model: BaseEstimator, X: npt.ArrayLike, y: npt.ArrayLike | None, supervised:bool=False) -> Callable:
     def trainer(**kwargs) -> tuple[BaseEstimator, str]:
+        if supervised and y == None:
+            raise Exception("y Must be defined when using a supervised model")
+
         mdl = model(**kwargs).fit(X, y) if supervised else model(**kwargs).fit(X)
         path = save_model(mdl)
         return mdl, path

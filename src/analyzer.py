@@ -5,8 +5,10 @@ from helpers import load_model
 from report import generate_report
 import json
 
+
 settings = json.load("./settings.json")
 MODEL_PATH = f"{os.getcwd()}/models/{settings["MODEL"]}"
+
 
 def analyze_file(filename:str) -> int:
     streamer = NFStreamer(source=filename, statistical_analysis=True, )
@@ -17,9 +19,7 @@ def analyze_file(filename:str) -> int:
     #There is def a bug here. I need to look at what the streamer spits out to know how to do the feature accessing
     predictions = model.predict(df[model.columns])
 
-    generate_report(predictions)
-
-    return 0
+    return generate_report(predictions)
 
 
 def analyze_directory(directory_path:str) -> int:
