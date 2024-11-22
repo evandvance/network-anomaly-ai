@@ -24,7 +24,7 @@ def save_model(model:BaseEstimator, scores: str | None = None, is_new_model:bool
     if not is_new_model and not model_path:
         raise Exception("Saving an old model requires a path to store it.")
 
-    time = str(datetime.now(timezone.utc)).replace(" ","")
+    time = str(datetime.now(timezone.utc)).replace(" ","#")
     path = f"{os.getcwd()}/models/{model.__class__.__name__}_{scores + '_' if scores else ''}{time}.mdl" if is_new_model else model_path
 
     with open(path,'wb') as f:

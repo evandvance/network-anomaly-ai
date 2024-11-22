@@ -15,7 +15,7 @@ parser.add_argument("--DELETE", action="store_true", dest="delete")
 args = parser.parse_args()
 
 
-def main(args) -> int:
+def main(args) -> None:
 
     if args.delete:
         pass
