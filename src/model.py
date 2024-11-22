@@ -27,7 +27,7 @@ def train_model(filename:str, train_new:bool=False) -> BaseEstimator:
 
     if not _old_model_exists() or train_new:
         print("Training new model...")
-        model = IsolationForest(n_jobs=-1, random_state=0)
+        model = IsolationForest(n_jobs=-1, random_state=0, warm_start=True)
     else:
         model = load_model(MODEL_PATH)
 
