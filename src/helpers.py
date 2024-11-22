@@ -18,33 +18,33 @@ def trainer_factory(model: BaseEstimator, X: npt.ArrayLike, y: npt.ArrayLike | N
 
     return trainer
 
-def save_model(model:BaseEstimator, scores: str | None = None) -> str:
+def save_model(model:BaseEstimator, scores: str | None = None, is_new_model:bool=True, model_path: str | None = None) -> str:
     print("Saving model...")
+
+    if not is_new_model and not model_path:
+        raise Exception("Saving an old model requires a path to store it.")
+
     time = str(datetime.now(timezone.utc)).replace(" ","")
-    path = f"{os.getcwd()}/models/{model.__class__.__name__}_{scores + '_' if scores else ''}{time}.mdl"
+    path = f"{os.getcwd()}/models/{model.__class__.__name__}_{scores + '_' if scores else ''}{time}.mdl" if is_new_model else model_path
 
     with open(path,'wb') as f:
         pickle.dump(model,f)
     return path
 
 def load_model(path:str) -> BaseEstimator:
-    print("Loading model...")
+    print(f"Loading model: {path}")
     with open(path, 'rb') as f:
         return pickle.load(f)
 
 def load_data(path:str) -> pd.DataFrame:
     print("Loading Data...")
 
-
-    streamer = NFStreamer(source=path,
-                          statistical_analysis=True,
-                          idle_timeout=.005,
-                          )
+    streamer = NFStreamer(source=path, statistical_analysis=True)
 
     data = streamer.to_pandas()
     features = data.drop(columns=["id", "expiration_id","src_ip", "src_mac", "src_oui", "dst_ip", "dst_mac","dst_oui"]).columns
 
-    for column in data.columns:
+    for column in features:
         if not is_numeric_dtype(data[column]):
             data[column] = LabelEncoder().fit_transform(data[column])
 

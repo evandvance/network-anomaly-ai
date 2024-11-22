@@ -7,11 +7,11 @@ import json
 
 with open("./settings.json") as f:
     settings = json.load(f)
-MODEL_PATH = f"{os.getcwd()}/models/{settings['MODEL']}"
 
 
 def analyze_file(filename:str) -> pd.DataFrame:
     print(f"File to analyze: {filename}")
+    MODEL_PATH = f"{os.getcwd()}/models/{settings['MODEL']}"
     data, features = load_data(filename)
     model = load_model(MODEL_PATH)
 
@@ -26,8 +26,10 @@ def analyze_file(filename:str) -> pd.DataFrame:
 
 
 def analyze_directory(directory_path:str) -> pd.DataFrame:
-    pcaps = glob.glob(os.path.join(f"{os.getcwd()}{directory_path.replace('.','')}", '*.pcap'))
-    
+    directory = os.getcwd() + directory_path.replace('.','')
+    print(f"Analyzing Directory: {directory}")
+    pcaps = glob.glob(os.path.join(f"{directory}", '*.pcap'))
+
     dataframes = []
     for capture in pcaps:
         dataframes.append(analyze_file(capture))
