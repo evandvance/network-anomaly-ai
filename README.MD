@@ -6,7 +6,7 @@ The data used for this model can be found at <https://www.kaggle.com/datasets/ch
 
 Due to its size and Githubs policys, it will not be included in this repo. It is accessed in the code from a folder named data.
 
-The details of curration of the captures used is found at <https://www.unb.ca/cic/datasets/ids-2017.html>
+The details of curration of the captures used is found at <https://www.unb.ca/cic/datasets/ids-2017.html> as well as the raw captures used to create the csvs
 
 ## Setup
 
