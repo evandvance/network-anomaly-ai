@@ -1,28 +1,37 @@
 import glob
 import os
 from src.helpers import load_model, load_data
-from src.report import generate_report
+import pandas as pd
 import json
 
 
 with open("./settings.json") as f:
     settings = json.load(f)
-MODEL_PATH = f"{os.getcwd()}/models/{settings['MODEL']}"
 
 
-def analyze_file(filename:str) -> int:
-    data = load_data(filename)
+def analyze_file(filename:str) -> pd.DataFrame:
+    print(f"File to analyze: {filename}")
+    MODEL_PATH = f"{os.getcwd()}/models/{settings['MODEL']}"
+    data, features = load_data(filename)
     model = load_model(MODEL_PATH)
 
-    predictions = model.predict(data[model.columns])
+    if model == None:
+        raise Exception("No Model Found... Please train a new one.")
 
-    return generate_report(predictions, filename)
+    data["Predictions"] = model.predict(data[features])
+
+    data["Predictions"] = data["Predictions"].map(lambda val: "Attack" if val == -1 else "Normal")
+
+    return data
 
 
-def analyze_directory(directory_path:str) -> int:
-    pcaps = glob.glob(os.path.join(f"{os.getcwd()}{directory_path.replace('.','')}", '*.pcap'))
+def analyze_directory(directory_path:str) -> pd.DataFrame:
+    directory = os.getcwd() + directory_path.replace('.','')
+    print(f"Analyzing Directory: {directory}")
+    pcaps = glob.glob(os.path.join(f"{directory}", '*.pcap'))
 
+    dataframes = []
     for capture in pcaps:
-        analyze_file(capture)
+        dataframes.append(analyze_file(capture))
 
-    return 0
+    return pd.concat(dataframes)
