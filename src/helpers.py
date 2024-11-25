@@ -1,13 +1,9 @@
 from sklearn.base import BaseEstimator
-from typing import Callable, Literal
-from enum import Enum
 from datetime import datetime, timezone
-import numpy.typing as npt
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
 from nfstream import NFStreamer
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import auc, precision_recall_curve, accuracy_score, precision_score, recall_score, roc_auc_score
 import pickle
 import os
 
@@ -77,34 +73,4 @@ def load_data(path:str) -> pd.DataFrame:
     return data, features
 
 
-class Metrics(Enum):
-    auprc = 1
-    auc_roc = 2
-    precision = 3
-    recall = 4
-    accuracy = 5
-
-
-def eval_model(model: BaseEstimator, X_test: npt.ArrayLike, y_test: npt.ArrayLike):
-    score = {}
-    predictions = model.predict(X_test)
-
-    predictions[predictions == -1] = 0
-
-    precision, recall, _ = precision_recall_curve(y_test, predictions)
-    score["auprc"] = auc(recall, precision)
-    score["auc_roc"] = roc_auc_score(y_test, predictions)
-    score["precision"] = precision_score(y_test, predictions)
-    score["recall"] = recall_score(y_test, predictions)
-    score["accuracy"] = accuracy_score(y_test, predictions)
-
-    return score
-
-
-def unsupervised_trainer_factory(model: BaseEstimator, X_train: npt.ArrayLike, y_train: npt.ArrayLike, X_test: npt.ArrayLike, y_test: npt.ArrayLike, metric: Metrics) -> Callable:
-    def trainer(**kwargs) -> tuple[BaseEstimator, str]:
-        mdl = model(**kwargs).fit(X_train)
-        return eval_model(mdl, X_test, y_test)[metric]
-
-    return trainer
 
