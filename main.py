@@ -1,7 +1,6 @@
 import argparse
-import sys
 from src.analyzer import analyze_directory, analyze_file
-from src.model import train_model, train_on_directory
+from src.model import train_on_file, train_on_directory
 from src.report import generate_report
 
 parser = argparse.ArgumentParser(prog="Anomaly Detection in PCAP",
@@ -38,16 +37,16 @@ def main(args) -> None:
 
     if args.is_in_train_mode:
         print("Training Mode Activated...")
-        return train_model(args.filename)
+        return train_on_file(args.filename)
 
     if args.is_directory:
         print("Analyzing Directory...")
         data = analyze_directory(args.filename)
-        return generate_report(data, f"./{args.filename.split('/')[-1]}_Report")
+        return generate_report(data, f"./reports/{args.filename.split('/')[-1]}_Report")
 
     print("Analyzing file...")
     data = analyze_file(args.filename)
-    return generate_report(data, f"./{args.filename.split('/')[-1]}_Report")
+    return generate_report(data, f"./reports/{args.filename.split('/')[-1]}_Report")
 
 if __name__ == "__main__":
     main(args)

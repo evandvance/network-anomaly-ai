@@ -1,6 +1,8 @@
 import glob
 import os
 import json
+import numpy.typing as npt
+import pandas as pd
 from sklearn.ensemble import IsolationForest
 from sklearn.base import BaseEstimator
 from src.helpers import load_model, save_model, load_data
@@ -10,28 +12,22 @@ with open("./settings.json") as f:
     settings = json.load(f)
 
 
-def train_model(filename:str, train_new:bool=False) -> BaseEstimator:
-    """A function that trains a Machine Learning model on a netflow generate from a pcap.
+def train_model(data: npt.ArrayLike, features: npt.ArrayLike) -> BaseEstimator:
+    """A function to train a model
 
     Args:
-        filename (str): The path to the pcap
-        train_new (bool, optional): A boolean that if true trains a new model. Defaults to False.
-    
+        data (npt.ArrayLike): The data for the model to be trained on
+        features (npt.arraylike): A list of all the features of the model
+
     Returns:
-        model (BaseEstimator): the machine learning model that was trained
+        BaseEstimator: The model that has been fitted
     """
-    print(f"Training Model on file {filename}")
-
     MODEL_PATH = f"{os.getcwd()}/models/{settings['MODEL']}"
-    train_data, features = load_data(filename)
 
-    if not _old_model_exists() or train_new:
-        print("Training new model...")
-        model = IsolationForest(n_jobs=-1, random_state=0, warm_start=True)
-    else:
-        model = load_model(MODEL_PATH)
+    model = IsolationForest(n_jobs=-1, random_state=0)
 
-    model.fit(train_data[features])
+    print("Fitting Model...")
+    model.fit(data[features])
 
     if _old_model_exists():
         save_model(model, is_new_model=False, model_path=MODEL_PATH)
@@ -44,8 +40,20 @@ def train_model(filename:str, train_new:bool=False) -> BaseEstimator:
     return model
 
 
+def train_on_file(file_path:str) -> None:
+    """A function to train a model on a single capture file
+
+    Args:
+        file_path (str): The path to the file to be trained on
+    """
+    print(f"Training on file: {file_path}")
+    data, features = load_data(file_path)
+
+    train_model(data, features)
+
+
 def train_on_directory(directory_path:str) -> None:
-    """A function to train a machine learning model on pcaps in a directoru
+    """A function to train a machine learning model on pcaps in a directory
 
     Args:
         directory_path (str): Path to directory
@@ -53,8 +61,15 @@ def train_on_directory(directory_path:str) -> None:
     print(f"Training on all pcaps in directory: {directory_path}")
     pcaps = glob.glob(os.path.join(f"{os.getcwd()}{directory_path.replace('.','', 1)}", '*.pcap'))
 
+    captures = []
+    features = []
     for capture in pcaps:
-        train_model(capture)
+        df, features = load_data(capture)
+        captures.append(df)
+
+    captures = pd.concat(captures)
+
+    train_model(captures, features)
 
 
 def _old_model_exists() -> bool:
