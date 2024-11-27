@@ -59,7 +59,7 @@ def load_data(path:str) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A dataframe representation of the netflow of the pcap
     """
-    print("Loading Data...")
+    print(f"Loading Data from {path}")
 
     streamer = NFStreamer(source=path, statistical_analysis=True)
 
