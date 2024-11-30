@@ -42,11 +42,11 @@ def main(args) -> None:
     if args.is_directory:
         print("Analyzing Directory...")
         data = analyze_directory(args.filename)
-        return generate_report(data, f"./reports/{args.filename.split('/')[-1]}_Report")
+        return generate_report(data, f"./reports/{args.filename.split('/')[-1]}")
 
     print("Analyzing file...")
     data = analyze_file(args.filename)
-    return generate_report(data, f"./reports/{args.filename.split('/')[-1]}_Report")
+    return generate_report(data, f"./reports/{args.filename.split('/')[-1]}")
 
 if __name__ == "__main__":
     main(args)
