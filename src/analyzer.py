@@ -32,6 +32,7 @@ def analyze_file(filename:str) -> pd.DataFrame:
     if model == None:
         raise Exception("No Model Found... Please train a new one.")
 
+    print("Analyzing...")
     data["Predictions"] = model.predict(data[features])
 
     data["Predictions"] = data["Predictions"].map(lambda val: "MALICIOUS" if val == -1 else "BENIGN")

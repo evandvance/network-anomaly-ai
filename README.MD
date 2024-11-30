@@ -25,3 +25,19 @@ conda config --set pip_interop_enabled True
 conda install --yes --file requirements.txt
 pip install nfstream
 ```
+
+## Running
+
+Once installed, run the main file with your arguments to run the program.
+
+The arguments are as follows:
+
+`python3 ./main.py [-t or --train] [-d or --directory] [filename]`
+
+If the train flag is passd, a new model is trained on the file or directory.
+If the directory flag is passed, the filename is treated like a directory.
+If the filename or directory is passed without the train flag, the program
+loads the saved model and predicts whether the network conversation was
+malicious or benign.
+
+This program assumes you are passing pcaps to it but it should crash without a pcap.
